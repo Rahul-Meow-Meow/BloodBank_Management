@@ -20,10 +20,15 @@ def match(gr,rh):
             x=["O-",gr+"-"]
         elif gr=="AB":
             x=["O-","A-","B-","AB-"]
+        elif gr=='O':
+            x=['O-']
     return x
 #Only for testing purposes
-##gr,rh=split("A+")
-##print(match(gr,rh))
+#gr,rh=split("A+")
+#print(match(gr,rh))
+#n=input('Enter your blood group')
+#gr,rh=split(n)
+#print(match(gr,rh))
 
 #Looks legit, will be helpful. - Bharat.
             
