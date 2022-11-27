@@ -1,3 +1,6 @@
+#Edit 1: Lines 11-16. Created a try except block that creates a table hospital list from python itself, to prevent the user from creating it in sql itself.
+#Edit 2: Lines 89-94. Replaced Receipient with donor as this accepts donor information.
+
 import mysql.connector
 from new_functions import *
 con=mysql.connector.connect(host='localhost',user='root',passwd='root',database='hello')
@@ -5,6 +8,14 @@ cur=con.cursor()
 #login
 import random
 #d={123231: ["Password","Meow Hospitals"], 123345: ["Random Password","Not Meow Hospitals"]}
+
+try:
+    Query = "create table {}(Hospital_ID int(6), Hospital_name varchar(100), Password varchar(100))".format('hospital_list')
+    cur.execute(Query)
+    con.commit()
+except Exception:
+    print("We move.")
+
 def input_into_hospital(Id,name,pwd):
     query="insert into hospital_list values({},'{}','{}')".format(Id,name,pwd)
     cur.execute(query)
@@ -75,12 +86,12 @@ def login(Id):
             ch='y'
             count=1
             while ch=='y':
-                f_name=input("Enter full name of recepient:")
-                age=int(input("Enter age of recepient:"))
-                bl_gr=input("Enter blood group of recepient:")
-                Sex=input("Enter sex of recepient:")
-                c_no=int(input("Enter contact number of recepient:"))
-                address=input("Enter address of recepient:")
+                f_name=input("Enter full name of Donor:")
+                age=int(input("Enter age of Donor:"))
+                bl_gr=input("Enter blood group of Donor:")
+                Sex=input("Enter sex of Donor:")
+                c_no=int(input("Enter contact number of Donor:"))
+                address=input("Enter address of Donor:")
                 req=float(input("Enter amount of blood required:"))
                 date=int(input("Enter date:"))
                 query='insert into {} values("{}",{},"{}","{}",{},"{}",{},{})'.format('h_'+str(Id),f_name,age,bl_gr,Sex,c_no,address,req,date)
