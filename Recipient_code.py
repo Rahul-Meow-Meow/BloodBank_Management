@@ -8,7 +8,7 @@ from Sql_functions import *
 ##Hosp_ID = int(input("Enter Hospital ID:"))
 ##check(Hosp_ID)
 
-def show_don_list():
+def show_rec_list():
     print("Select Hospital ID of your choice:")
     query = "select Hospital_ID from {}".format("hospital_list")
     cur.execute(query)
@@ -26,5 +26,4 @@ def show_don_list():
             for j in s:
                 print(j)
 
-
-show_don_list()
+#Not much of a change, just changed the name to Recipient_code since this was for recipients all along.
