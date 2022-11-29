@@ -1,6 +1,6 @@
 # CS-Project
 
-Hey Rahul.. and team, I uh revamped quite a lot.
+Hey Rahul.. and team, I uh revamped quite a lot of things here.
 
 Incase you wonder wth happened here, allow me to explain.
 There are only six python files that we are using here.
