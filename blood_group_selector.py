@@ -16,12 +16,12 @@ def b_match(gr,rh):
         elif gr in "AB":
             x=["O+","O-","A+","A-","B+","B-","AB+","AB-"]
         elif gr in "O":
-            x=["O+","O-",'random','random','random','ransom''random','random']
+            x=["O+","O-",'random','random','random','ransom','random','random']
     elif rh=="-":
         if gr in ["A","B"]:
-            x=["O-",gr+"-",'random','random','random','ransom''random','random']
+            x=["O-",gr+"-",'random','random','random','ransom','random','random']
         elif gr=="AB":
-            x=["O-","A-","B-","AB-"'random','random','random','ransom']
+            x=["O-","A-","B-","AB-",'random','random','random','ransom']
         elif gr=='O':
             x=['O-','random','random','random','ransom','random','random','random']
     return x
@@ -38,4 +38,3 @@ def b_match(gr,rh):
 #Edit - 2 Capitalized S in split to Split to prevent confusion with the string split function. 
 #Edit - 3 Some fixes in the lists. You forgot to put a few commas so it just read that as one element.
 
-        
