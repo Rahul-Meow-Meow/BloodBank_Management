@@ -5,7 +5,7 @@ import random
 import mysql.connector
 from Sql_functions import *
 from Blood_group_selector import *
-con=mysql.connector.connect(host='localhost',user='root',passwd='Dharmodynamics',database='bloodbank_management')
+con=mysql.connector.connect(host='localhost',user='root',passwd='root',database='bloodbank_management')
 cur=con.cursor()
 
 try:
@@ -72,20 +72,95 @@ def check_patient(Id):
         l.append(i[0])
         if n in l:
             #print("Boy I'm boutta whip yo pickle chin ah boy")
-            matched_bgr = Match(n,Id)
-            print(f"Possible matches: {matched_bgr}")
+            Match(n,Id)
             break
     else:
         print("Error 404: Patient Not Found")
 
 def Match(n,Id):
-    r=fetch('h_'+str(Id))
-    for i in r:
-        if i[0] == n:
-            b=i[2]
+    r1=fetch('h_'+str(Id))
+    r=fetch('bloodbank')
+    #print(r)
+    d1={}
+    d={}
+    d_nomore={}
+    for j in r:
+        d[j[0]]=j[2]
+    #print(d)
+    for new in r1:
+        d1[new[0]]=new[2]
+    for very_new in r1:
+        d_nomore[very_new[0]]=very_new[6]
+##    print()
+##    print(d1)
+    #for i in r:
+    for c in d1:
+        if c == n:
+            b=d1[c]
+            #print(b)
             gr,rh=Split(b)
             l=b_match(gr,rh)
-            return l
+            l2=[]
+            #
+            for k in d:
+                if d[k] in l:
+                    l2.append(k)
+            #print(l2)
+            for z in l2:
+                for variable in r:
+                    #l3=[]
+                    if variable[0]==z:
+                        print(variable)
+                        #l3.append(variable)
+            x=input("Enter your choice of donor:")
+            for A in r:
+                if A[0]==x:
+                    tup=A
+            print(l2)   
+            for f in l2:
+                #print(f)
+                if x==f:
+                    change=d_nomore[n]
+                    print(change)
+                    #t=type_cast(tup,6,change)
+                    for FINAL in r:
+                        if FINAL[0]==f:
+                            remain=FINAL[6]-change
+                            query='update {} set  Amount_of_blood_donated_in_mL = {} where Full_Name="{}"'.format('bloodbank',remain,f)
+                            cur.execute(query)
+                            con.commit()
+##                            print(FINAL)
+##                            t=type_cast(FINAL,6,change)
+##                            INDD=r.index(FINAL)
+##                            r.pop(INDD)
+##                            r.insert(INDD,t)
+##                    print("Changed list")
+##                    print(r)
+                            
+                            
+                    #r1.pop(IND)
+                    #r1.append(t)
+            #print(r1)
+                                
+##                    
+##def type_cast(t,index,change):
+##    l=list(t)
+##    #print(l[index])
+##    l[index]=l[index]-change
+##    t1=tuple(l)
+##    return t1
+         
+    
+                    
+                    
+                    
+##            query='select * from {} where Blood_Group like "{}" or "{}" or "{}" or "{}" or "{}" or "{}" or "{}" or "{}"'.format('bloodbank',a,b,c,d,e,f,g,h)
+##            l=cur.execute(query)
+##            r=l.fetchall()
+##            print(r)
+            
+            
+            
 
                
 def login(Id):
@@ -130,7 +205,7 @@ def login(Id):
         if tries==0:
             print("Im tired of your crap")
             break
-    
+ 
 #Edit - 1 Changed file name from hospital_list to Hospital_List
 #Edit - 2 Commented register under check function as we can ask the user to register separately.
 #Edit - 3 Added check_patient() function.
