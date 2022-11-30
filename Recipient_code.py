@@ -1,5 +1,5 @@
 import mysql.connector
-con=mysql.connector.connect(host='localhost',user='root',passwd='Dharmodynamics',database='bloodbank_management')
+con=mysql.connector.connect(host='localhost',user='root',passwd='root',database='bloodbank_management')
 cur=con.cursor()
 from Hospital_Login import *
 from Sql_functions import *
@@ -25,5 +25,6 @@ def show_rec_list():
             s = cur.fetchall()
             for j in s:
                 print(j)
-
+            n=input("Enter name of person:")
+            Match(n,choice)
 #Not much of a change, just changed the name to Recipient_code since this was for recipients all along.
