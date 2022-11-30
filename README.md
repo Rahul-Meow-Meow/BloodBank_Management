@@ -14,3 +14,6 @@ I have commented all the edits required.
 Old_hospital_login and yea this is not needed lmao can be deleted but I kept it there just for the time being. You can take a call later.
 
 Oh also, remember to change the password to root. Too much Dynamic Dharma. 
+
+
+I am done with this shit, im not gonna take IT for my bread and butter~Rahul
