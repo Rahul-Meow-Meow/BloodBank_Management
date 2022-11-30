@@ -6,7 +6,7 @@ from Donor_code import *
 from Recipient_code import *
 
 import mysql.connector
-con=mysql.connector.connect(host='localhost',user='root',passwd='Dharmodynamics', database = 'bloodbank_management')
+con=mysql.connector.connect(host='localhost',user='root',passwd='root', database = 'bloodbank_management')
 cur=con.cursor()
 
 print("Welcome to our Bloodbank management system!")
