@@ -14,7 +14,7 @@ import mysql.connector
 ##    except Exception:
 ##        print("Database already exists.")
 ##a = create_database()
-con=mysql.connector.connect(host='localhost',user='root',passwd='Dharmodynamics', database = "bloodbank_management")
+con=mysql.connector.connect(host='localhost',user='root',passwd='root', database = "bloodbank_management")
 cur=con.cursor()
 ##def create(table):
 ##    try:
@@ -32,3 +32,4 @@ def fetch(table):
         return r
     except Exception:
         print("Database doesnt exist")
+
