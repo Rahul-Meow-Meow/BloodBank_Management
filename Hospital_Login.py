@@ -8,7 +8,7 @@ from Blood_group_selector import *
 from Donor_code import *
 from Recipient_code import *
 
-con=mysql.connector.connect(host='localhost',user='root',passwd='Dharmodynamics',database='bloodbank_management')
+con=mysql.connector.connect(host='localhost',user='root',passwd='root',database='bloodbank_management')
 cur=con.cursor()
 
 try:
@@ -78,12 +78,12 @@ def check_patient(Id):
             print(i)
             ch = input(f"Find matches for patient {n}? y/n").lower()
             if ch == 'y':
-                Match(n,Id)
+                new_Match(n,Id)
             break
     else:
         print("Error 404: Patient Not Found")
 
-def Match(n,Id):
+def new_Match(n,Id):
     rhosp = fetch('h_'+str(Id))#Fetches hospital table contents
     rbank = fetch('bloodbank')#Fetches bloodbank table contents
     Rpents_n_blgrp={}
@@ -114,25 +114,53 @@ def Match(n,Id):
                         print("Possible Donors:")
                         print(donors)
             don_choice = input("Enter your choice of donor:")
-            
-            for donors in rbank:
-                if donors[0] == don_choice:
-                    tup = donors
-        
             for d_name in list_o_donors:
-                if don_choice == d_name:
-                    req_bld_amt = Rpents_n_req_bld[n]
-                    #print(req_bld_amt)
-                    for donors in rbank:
-                        if donors[0] == d_name:
-                            rem_bld_amt = donors[6] - req_bld_amt
-                            don_bld_amt = req_bld_amt - req_bld_amt
+                    if don_choice == d_name:
+                        req_bld_amt = Rpents_n_req_bld[n]
+                        print(req_bld_amt)
+            while req_bld_amt>=0:
+    ##            for donors in rbank:
+    ##                if donors[0] == don_choice:
+    ##                    tup = donors
+                for donors in rbank:
+                    if donors[0] == d_name and donors[0]!=0:
+                        if donors[6]<req_bld_amt and donors[6]!=0: 
+                            rem_bld_amt = req_bld_amt-donors[6]
+                            don_bld_amt = donors[6]
                             print("Successfully requested for the donated blood!!")
+                            print(f"Remaining amount of blood needed is {rem_bld_amt}")
                             query='update {} set  Amount_of_blood_donated_in_mL = {} where Full_Name="{}"'.format('bloodbank',rem_bld_amt,d_name)
                             query2 = 'update {} set Amount_of_blood_required_in_mL = {} where Full_Name="{}"'.format('h_'+str(Id),don_bld_amt,n)              
                             cur.execute(query)
+                            con.commit()
                             cur.execute(query2)
                             con.commit()
+                            req_bld_amt=req_bld_amt-donors[6]
+                            break
+                        elif donors[6]==0:
+                            print("There is no more blood idiot")
+                            don_choice = input("Enter your choice of donor:")
+                            d_name=don_choice
+                                    
+##                                    pass
+                            break
+                        elif donors[6]>=req_bld_amt:
+                            rem_bld_amt=donors[6]-req_bld_amt
+                            don_bld_amt=req_bld_amt
+                            print("Successfully requested for the donated blood!!")
+                            print(f"Remaining amount of blood needed is 0")
+                            query='update {} set  Amount_of_blood_donated_in_mL = {} where Full_Name="{}"'.format('bloodbank',rem_bld_amt,d_name)
+                            query2 = 'update {} set Amount_of_blood_required_in_mL = 0 where Full_Name="{}"'.format('h_'+str(Id),n)              
+                            cur.execute(query)
+                            con.commit()
+                            cur.execute(query2)
+                            con.commit()
+                            req_bld_amt=-1
+                            
+
+                        
+                        
+
 ##    for i in r:
 ##        if i[0] == n:
 ##            b=i[2]
