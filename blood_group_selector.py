@@ -33,8 +33,4 @@ def b_match(gr,rh):
 ##print(b_match(gr,rh))
 
 #Looks legit, will be helpful. - Bharat.
-            
-#Edit - 1 Changed it from Blood_gp_selector to Blood_group_selector.            
-#Edit - 2 Capitalized S in split to Split to prevent confusion with the string split function. 
-#Edit - 3 Some fixes in the lists. You forgot to put a few commas so it just read that as one element.
 
