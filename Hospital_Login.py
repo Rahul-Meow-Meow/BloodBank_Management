@@ -5,7 +5,10 @@ import random
 import mysql.connector
 from Sql_functions import *
 from Blood_group_selector import *
-con=mysql.connector.connect(host='localhost',user='root',passwd='root',database='bloodbank_management')
+from Donor_code import *
+from Recipient_code import *
+
+con=mysql.connector.connect(host='localhost',user='root',passwd='Dharmodynamics',database='bloodbank_management')
 cur=con.cursor()
 
 try:
@@ -13,7 +16,7 @@ try:
     cur.execute(Query)
     con.commit()
 except Exception:
-    print("We move.")
+    pass
 
 def input_into_hospital(Id,name,pwd):
     query="insert into hospital_list values({},'{}','{}')".format(Id,name,pwd)
@@ -60,7 +63,7 @@ def register():
             print("We are done man, u arent fit to run a hospital")
             break
     input_into_hospital(x,name,pwd2)
-    query='create table {} (Full_Name varchar(50),Age int(3),Blood_Group varchar(4),Sex varchar(15),Contact_Number int(20),Address varchar(200),Amount_of_blood_required_in_mL float(6),Date_of_request date default(curdate()))'.format('h_'+str(x))
+    query='create table {} (Full_Name varchar(50),Age int(3),Blood_Group varchar(4),Sex varchar(15),Contact_Number bigint(20),Address varchar(200),Amount_of_blood_required_in_mL float(6),Date_of_request date default(curdate()))'.format('h_'+str(x))
     cur.execute(query)
     con.commit()
     
@@ -71,96 +74,71 @@ def check_patient(Id):
     for i in r:
         l.append(i[0])
         if n in l:
-            #print("Boy I'm boutta whip yo pickle chin ah boy")
-            Match(n,Id)
+            print("Patient found:")
+            print(i)
+            ch = input(f"Find matches for patient {n}? y/n").lower()
+            if ch == 'y':
+                Match(n,Id)
             break
     else:
         print("Error 404: Patient Not Found")
 
 def Match(n,Id):
-    r1=fetch('h_'+str(Id))
-    r=fetch('bloodbank')
-    #print(r)
-    d1={}
-    d={}
-    d_nomore={}
-    for j in r:
-        d[j[0]]=j[2]
-    #print(d)
-    for new in r1:
-        d1[new[0]]=new[2]
-    for very_new in r1:
-        d_nomore[very_new[0]]=very_new[6]
-##    print()
-##    print(d1)
-    #for i in r:
-    for c in d1:
-        if c == n:
-            b=d1[c]
-            #print(b)
-            gr,rh=Split(b)
-            l=b_match(gr,rh)
-            l2=[]
-            #
-            for k in d:
-                if d[k] in l:
-                    l2.append(k)
-            #print(l2)
-            for z in l2:
-                for variable in r:
-                    #l3=[]
-                    if variable[0]==z:
-                        print(variable)
-                        #l3.append(variable)
-            x=input("Enter your choice of donor:")
-            for A in r:
-                if A[0]==x:
-                    tup=A
-            print(l2)   
-            for f in l2:
-                #print(f)
-                if x==f:
-                    change=d_nomore[n]
-                    print(change)
-                    #t=type_cast(tup,6,change)
-                    for FINAL in r:
-                        if FINAL[0]==f:
-                            remain=FINAL[6]-change
-                            query='update {} set  Amount_of_blood_donated_in_mL = {} where Full_Name="{}"'.format('bloodbank',remain,f)
-                            cur.execute(query)
-                            con.commit()
-##                            print(FINAL)
-##                            t=type_cast(FINAL,6,change)
-##                            INDD=r.index(FINAL)
-##                            r.pop(INDD)
-##                            r.insert(INDD,t)
-##                    print("Changed list")
-##                    print(r)
-                            
-                            
-                    #r1.pop(IND)
-                    #r1.append(t)
-            #print(r1)
-                                
-##                    
-##def type_cast(t,index,change):
-##    l=list(t)
-##    #print(l[index])
-##    l[index]=l[index]-change
-##    t1=tuple(l)
-##    return t1
-         
+    rhosp = fetch('h_'+str(Id))#Fetches hospital table contents
+    rbank = fetch('bloodbank')#Fetches bloodbank table contents
+    Rpents_n_blgrp={}
+    Donors_n_blgrp = {}
+    Rpents_n_req_bld = {}
+    for donors in rbank:
+        Donors_n_blgrp[donors[0]] = donors[2]
     
+    for rpents in rhosp:
+        Rpents_n_blgrp[rpents[0]] = rpents[2]
+        
+    for rpents in rhosp:
+        Rpents_n_req_bld[rpents[0]] = rpents[6]
+    
+    for r_name in Rpents_n_blgrp:
+        if r_name == n:
+            bl_grp = Rpents_n_blgrp[r_name]
+            gr,rh=Split(bl_grp)
+            matched_bl_grps = b_match(gr,rh)# List of the possible blood groups that can donate.
+            list_o_donors = []
+            for d_names in Donors_n_blgrp:
+                if Donors_n_blgrp[d_names] in matched_bl_grps:
+                    list_o_donors.append(d_names)
                     
-                    
-                    
-##            query='select * from {} where Blood_Group like "{}" or "{}" or "{}" or "{}" or "{}" or "{}" or "{}" or "{}"'.format('bloodbank',a,b,c,d,e,f,g,h)
-##            l=cur.execute(query)
-##            r=l.fetchall()
-##            print(r)
+            for d_name in list_o_donors:
+                for donors in rbank:
+                    if donors[0] == d_name:
+                        print("Possible Donors:")
+                        print(donors)
+            don_choice = input("Enter your choice of donor:")
             
-            
-            
+            for donors in rbank:
+                if donors[0] == don_choice:
+                    tup = donors
+        
+            for d_name in list_o_donors:
+                if don_choice == d_name:
+                    req_bld_amt = Rpents_n_req_bld[n]
+                    #print(req_bld_amt)
+                    for donors in rbank:
+                        if donors[0] == d_name:
+                            rem_bld_amt = donors[6] - req_bld_amt
+                            don_bld_amt = req_bld_amt - req_bld_amt
+                            print("Successfully requested for the donated blood!!")
+                            query='update {} set  Amount_of_blood_donated_in_mL = {} where Full_Name="{}"'.format('bloodbank',rem_bld_amt,d_name)
+                            query2 = 'update {} set Amount_of_blood_required_in_mL = {} where Full_Name="{}"'.format('h_'+str(Id),don_bld_amt,n)              
+                            cur.execute(query)
+                            cur.execute(query2)
+                            con.commit()
+##    for i in r:
+##        if i[0] == n:
+##            b=i[2]
+##            gr,rh=Split(b)
+##            l=b_match(gr,rh)
+##            return l
 
                
 def login(Id):
@@ -176,28 +154,29 @@ def login(Id):
     while True: 
         pwd=input("Enter password for login:")
         if pwd==d[Id]:
-            print("Records of the hospital are:")
-            print(fetch('h_'+str(Id)))
-            ch='y'
-            count=1
-            while ch=='y':
-                f_name=input("Enter full name of Recipient:")
-                age=int(input("Enter age of Recipient:"))
-                bl_gr=input("Enter blood group of Recipient:")
-                Sex=input("Enter sex of Recipient:")
-                c_no=int(input("Enter contact number of Recipient:"))
-                address=input("Enter address of Recipient:")
-                req=float(input("Enter amount of blood required:"))
-                date=int(input("Enter date:"))
-                query='insert into {} values("{}",{},"{}","{}",{},"{}",{},{})'.format('h_'+str(Id),f_name,age,bl_gr,Sex,c_no,address,req,date)
-                cur.execute(query)
-                con.commit()
-                ch=input("Do you want to continue?(y/n):").lower()
-                if ch=='y':
-                    count+=1
-                    continue
+            print("You've successfully logged into your account.")
+            print(f"Hospital ID: {Id}")
+            for i in r:
+                if i[0] == Id: 
+                    print(f"Hospital Name: {i[1]}")
+            cho = ''
+            while cho !='no':
+                print("Select one of the following options:")
+                print("a. Insert recipient data.")
+                print("b. Show the list of recipients.")
+                print("c. Match group for recipient and make donation.")
+                cho = input("Select your choice: \nType 'no' to Logout.").lower()
+                if cho == 'a':
+                    insert_rec_data(Id)
+                elif cho == 'b':
+                    show_rec_list(Id)
+                elif cho == 'c':
+                    check_patient(Id)
+                elif cho == 'no':
+                    print("You have logged out.")
+                    break
                 else:
-                    break                                  
+                    continue
             break
         elif pwd!=d[Id][0]:
             print("Incorrect password")
@@ -205,12 +184,31 @@ def login(Id):
         if tries==0:
             print("Im tired of your crap")
             break
- 
-#Edit - 1 Changed file name from hospital_list to Hospital_List
-#Edit - 2 Commented register under check function as we can ask the user to register separately.
-#Edit - 3 Added check_patient() function.
-#Edit - 4 Upgraded check_patient() function.
-#Edit - 5 Added Match() function
-#Edit - 6 Upgraded Match() function.
-#Edit - 7 Login accepts data from the RECIPIENT AKA THE PATIENT.
-#Edit - 8 Rahul GOAT.
+
+##def display_records(Id):
+##    r=fetch('hospital_list')
+##    print("Records of the hospital are:")
+##    print(fetch('h_'+str(Id)))  
+
+def insert_rec_data(Id):
+    r=fetch('hospital_list')
+    ch='y'
+    count=1
+    while ch=='y':
+        f_name=input("Enter full name of Recipient:")
+        age=int(input("Enter age of Recipient:"))
+        bl_gr=input("Enter blood group of Recipient:")
+        Sex=input("Enter sex of Recipient:")
+        c_no=int(input("Enter contact number of Recipient:"))
+        address=input("Enter address of Recipient:")
+        req=float(input("Enter amount of blood required:"))
+        date=int(input("Enter date:"))
+        query='insert into {} values("{}",{},"{}","{}",{},"{}",{},{})'.format('h_'+str(Id),f_name,age,bl_gr,Sex,c_no,address,req,date)
+        cur.execute(query)
+        con.commit()
+        ch=input("Do you want to continue?(y/n):").lower()
+        if ch=='y':
+            count+=1
+            continue
+        else:
+            break
