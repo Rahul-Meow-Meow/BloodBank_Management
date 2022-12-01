@@ -1,5 +1,7 @@
+# Donor code
+
 import mysql.connector
-con=mysql.connector.connect(host='localhost',user='root',passwd='root',database='bloodbank_management')
+con=mysql.connector.connect(host='localhost',user='root',passwd='Dharmodynamics',database='bloodbank_management')
 cur=con.cursor()
 
 try:
@@ -8,6 +10,34 @@ try:
     con.commit()
 except Exception:
     pass
+
+def bloodbank_login():
+    tries=3
+    while tries>0:
+        pwd=input("Enter password for login:")
+        if pwd == "Dharmodynamics":
+            print("Successfully logged into the Bloodbank database:")
+            ch = ''
+            while ch != 'n':
+                print("Please select an option below:")
+                print("a. Insert donor data.")
+                print("b. Show list of donors.")
+                ch = input("Enter an option:\nPress n to logout of the bloodbank.").lower()
+                if ch == 'a':
+                    bloodbank_input()
+                elif ch == 'b':
+                    show_don_list()
+                elif ch == 'n':
+                    print("Logging out...")
+                    print("You have logged out.")
+                    break
+            break
+        elif pwd!='Dharmodynamics':
+            print("Incorrect password")
+            tries-=1
+        if tries==0:
+            print("Im tired of your crap")
+            break
 
 
 def bloodbank_input():
