@@ -1,7 +1,8 @@
 #Main:
 import mysql.connector
-con=mysql.connector.connect(host='localhost',user='root',passwd='root',autocommit=True)
+con=mysql.connector.connect(host='localhost',user='root',passwd='Dharmodynamics',autocommit=True)
 cur=con.cursor()
+
 try:
     query = "create database {}".format('bloodbank_management')
     cur.execute(query)
@@ -13,7 +14,7 @@ from Sql_functions import *
 from Hospital_Login import *
 from Donor_code import *
 from Recipient_code import *
-
+import time
 
 
 
@@ -22,12 +23,13 @@ from Recipient_code import *
 ch = ''
 
 while ch not in ('e','E'):
-    print("Welcome to our Bloodbank management system!")
-    print("1. Register Hospital")
-    print("2. Login to Hospital.")
-    print("3. Login to Bloodbank")
+    time.sleep(1)
+    print("Welcome to our Bloodbank management system!\n")
+    print("1. Register Hospital.\n")
+    print("2. Login to Hospital.\n")
+    print("3. Login to Bloodbank.\n")
     ch = input("Please select one of the above options to proceed. Press 'E' to exit.")
-    if ch ==    '1':
+    if ch == '1':
         register()
     elif ch == '2':
         Hosp_ID = int(input("Enter Hospital ID:"))
