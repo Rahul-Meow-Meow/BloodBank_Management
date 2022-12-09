@@ -32,3 +32,5 @@ def show_rec_list(Id):
             ], j))
         time.sleep(1)
         print (json.dumps(d, indent=4, default=str))
+
+        
