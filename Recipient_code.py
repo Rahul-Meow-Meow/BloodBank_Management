@@ -1,22 +1,34 @@
 import mysql.connector
-con=mysql.connector.connect(host='localhost',user='root',passwd='root',database='bloodbank_management',autocommit=True)
-cur=con.cursor()
+
+con = mysql.connector.connect(host='localhost', user='root',
+                              passwd='Dharmodynamics', autocommit=True)
+
+cur = con.cursor()
+
 from Hospital_Login import *
+
 from Sql_functions import *
 
+import time
 
-##Hosp_ID = int(input("Enter Hospital ID:"))
-##check(Hosp_ID)
+import json
+
 
 def show_rec_list(Id):
-    query = "select Hospital_ID from {}".format("hospital_list")
-    cur.execute(query)
-    r=cur.fetchall()
-    for i in r:
-        if Id == i[0]:
-            print('List of Recipients:')
-            query = "select * from {}".format('h_'+str(Id))
-            cur.execute(query)
-            s = cur.fetchall()
-            for j in s:
-                print(j)
+    print ('List of Recipients:')
+    query2 = 'select * from {}'.format('h_' + str(Id))
+    cur.execute(query2)
+    s = cur.fetchall()
+    for j in s:
+        d = dict(zip([
+            'Full Name',
+            'Age',
+            'Blood Group',
+            'Sex',
+            'Contact Number',
+            'Address',
+            'Amount of blood requested in mL',
+            'Date_of_request',
+            ], j))
+        time.sleep(1)
+        print (json.dumps(d, indent=4, default=str))
