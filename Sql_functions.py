@@ -13,3 +13,4 @@ def fetch(table):
         return r
     except Exception:
         print ('Database doesnt exist')
+
