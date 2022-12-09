@@ -1,7 +1,7 @@
 import mysql.connector
 
 con = mysql.connector.connect(host='localhost', user='root',
-                              passwd='Dharmodynamics', autocommit=True)
+                              passwd='root', autocommit=True)
 
 cur = con.cursor()
 
