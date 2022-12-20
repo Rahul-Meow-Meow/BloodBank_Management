@@ -30,13 +30,11 @@ try:
 except Exception:
     pass
 
-
 def input_into_hospital(Id, name, pwd):
     query = '''insert into
              hospital_list values({},'{}','{}')'''.format(Id, name, pwd)
     cur.execute(query)
     con.commit()
-
 
 def check(Id):
     r = fetch("hospital_list")
@@ -51,6 +49,7 @@ def check(Id):
         time.sleep(1)
 
 
+    
 def register():
     name = input("Enter name of hospital:")
     x = random.randrange(100000, 999999)
@@ -93,7 +92,7 @@ def register():
     cur.execute(query)
     con.commit()
 
-
+    
 def check_patient(Id):
     n = input("Enter name of patient:")
     r = fetch("h_" + str(Id))
@@ -115,8 +114,8 @@ def check_patient(Id):
                         "Date_of_request",
                     ],
                     i,
-                )
-            )
+                   )
+                    )
             print(json.dumps(d, indent=4, default=str))
             ch = input(f"Find matches for patient {n}? y/n").lower()
             if ch == "y":
@@ -125,8 +124,7 @@ def check_patient(Id):
     else:
         time.sleep(1)
         print("Error 404: Patient Not Found\n\n")
-
-
+        
 def Eject(Id):
     magic_no = float(0)
     query1 = '''delete from {} where
@@ -139,37 +137,37 @@ def Eject(Id):
     con.commit()
     cur.execute(query2)
     con.commit()
-
-
-def Match(n, Id):
+    
+def Match(n,Id):
     Eject(Id)
-    rhosp = fetch("h_" + str(Id))  # Fetches hospital table contents
-    rbank = fetch("bloodbank")  # Fetches bloodbank table contents
-    Rpents_n_blgrp = {}
+    rhosp = fetch('h_'+str(Id))#Fetches hospital table contents
+    rbank = fetch('bloodbank')#Fetches bloodbank table contents
+    Rpents_n_blgrp={}
     Donors_n_blgrp = {}
     Rpents_n_req_bld = {}
     for donors in rbank:
         Donors_n_blgrp[donors[0]] = donors[2]
-
+    
     for rpents in rhosp:
         Rpents_n_blgrp[rpents[0]] = rpents[2]
-
+        
     for rpents in rhosp:
         Rpents_n_req_bld[rpents[0]] = rpents[6]
-
+    
     for r_name in Rpents_n_blgrp:
         if r_name == n:
             bl_grp = Rpents_n_blgrp[r_name]
-            gr, rh = Split(bl_grp)
-            matched_bl_grps = b_match(
-                gr, rh
-            )  # List of the possible blood groups that can donate.
+            gr,rh=Split(bl_grp)
+            matched_bl_grps = b_match(gr,rh)# List of the possible blood groups that can donate.
             list_o_donors = []
             for d_names in Donors_n_blgrp:
                 if Donors_n_blgrp[d_names] in matched_bl_grps:
                     list_o_donors.append(d_names)
-
-            for d_name in list_o_donors:
+            print("Possible Donors:")
+            if len(list_o_donors) == 0:
+                print("There are no possible donors.")
+                break
+            for d_name in list_o_donors:         
                 for donors in rbank:
                     if donors[0] == d_name:
                         time.sleep(0.75)
@@ -186,13 +184,12 @@ def Match(n, Id):
                                     "Date_of_request",
                                 ],
                                 donors,
-                            )
-                        )
-                        print("Possible Donors:")
+                                )
+                                 )
                         time.sleep(1)
-                        print(json.dumps(d, indent=4, default=str))
+                        print(json.dumps(d, indent = 4, default = str))
             don_choice = input("Enter your choice of donor:")
-
+        
             for d_name in list_o_donors:
                 if don_choice == d_name:
                     req_bld_amt = Rpents_n_req_bld[n]
@@ -246,6 +243,7 @@ def Match(n, Id):
     Eject(Id)
 
 
+               
 def login(Id):
     r = fetch("hospital_list")
     l = []
@@ -300,30 +298,62 @@ def login(Id):
                 \nTry again sometime.\n
                  Redirecting you to the main menu.\n\n''')
             time.sleep(1)
-            break
-
+            break  
 
 def insert_rec_data(Id):
-    ch = "y"
+    Eject(Id)
+    ch = 'y'
     count = 1
-    while ch == "y":
+    while ch == 'y':
         f_name = input("Enter full name of Recipient:")
-        age = int(input("Enter age of Recipient:"))
-        bl_gr = input("Enter blood group of Recipient:")
+        while True:
+            try:
+                age = int(input("Enter age of Recipient:"))
+            except Exception:
+                print("Please enter a valid age.")
+                continue
+            else:
+                break
+        while True:
+            bl_gr = input("Enter blood group of Recipient:")
+            if bl_gr not in ["A+","B+","O+","A-","B-","O-","AB+","AB-"]:
+                print("Please enter a valid blood group.")
+                continue
+            else:
+                break
         Sex = input("Enter sex of Recipient:")
-        c_no = int(input("Enter contact number of Recipient:"))
+        while True:
+            try:
+                c_no = int(input("Enter contact number of Recipient:"))
+            except Exception:
+                print("Please enter a valid contact number.")
+            else:
+                break
         address = input("Enter address of Recipient:")
-        req = float(input("Enter amount of blood required:"))
-        date = int(input("Enter date:"))
+        while True:
+            try:
+                req = float(input("Enter amount of blood required:"))
+            except Exception:
+                print("Please enter a valid input.")
+            else:
+                break
+        while True:
+            try:
+                date = int(input("Enter date in YY-MM-DD format:"))
+            except Exception:
+                print("Please enter a valid date. YY-MM-DD.")
+                continue
+            else:
+                break
         query = '''insert into {} values
                 ("{}",{},"{}","{}",{},"{}",{},{})'''.format("h_" + str(Id), f_name,
                                                              age, bl_gr, Sex,
-                                                            c_no, address, req, date)
+                                                             c_no, address, req, date)
         cur.execute(query)
         con.commit()
         time.sleep(1)
         ch = input("Do you want to continue?(y/n):").lower()
-        if ch == "y":
+        if ch == 'y':
             count += 1
             continue
         else:
