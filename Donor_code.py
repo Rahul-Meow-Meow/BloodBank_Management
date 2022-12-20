@@ -28,8 +28,7 @@ def bloodbank_login():
         pwd = input("Enter password for login:")
         if pwd == "Dharmodynamics":
             time.sleep(1.25)
-            print('''Successfully logged into
-                     the Bloodbank database!\n\n''')
+            print('''Successfully logged into the Bloodbank database!\n\n''')
             ch = ""
             while ch != "n":
                 print("Please select an option below:")
@@ -68,13 +67,45 @@ def bloodbank_input():
     count = 1
     while ch == "y":
         f_name = input("Enter full name of Donor:")
-        age = int(input("Enter age of Donor:"))
-        bl_gr = input("Enter blood group of Donor:")
-        Sex = input("Enter sex of Donor:")
-        c_no = int(input("Enter contact number of Donor:"))
-        address = input("Enter address of Donor:")
-        req = float(input("Enter amount of blood to donate:"))
-        date = int(input("Enter date:"))
+        while True:
+            try:
+                age = int(input("Enter age of Recipient:"))
+            except Exception:
+                print("Please enter a valid age.")
+                continue
+            else:
+                break
+        while True:
+            bl_gr = input("Enter blood group of Recipient:")
+            if bl_gr not in ["A+","B+","O+","A-","B-","O-","AB+","AB-"]:
+                print("Please enter a valid blood group.")
+                continue
+            else:
+                break
+        Sex=input("Enter sex of Donor:")
+        while True:
+            try:
+                c_no = int(input("Enter contact number of Recipient:"))
+            except Exception:
+                print("Please enter a valid contact number.")
+            else:
+                break
+        address=input("Enter address of Donor:")
+        while True:
+            try:
+                req = float(input("Enter amount of blood required:"))
+            except Exception:
+                print("Please enter a valid input.")
+            else:
+                break
+        while True:
+            try:
+                date = int(input("Enter date in YY-MM-DD format:"))
+            except Exception:
+                print("Please enter a valid date. YY-MM-DD.")
+                continue
+            else:
+                break
         query = '''insert into {} values
                    ("{}",{},"{}","{}",{},"{}",{},{})'''.format("bloodbank", f_name,
                                                                age, bl_gr, Sex,
