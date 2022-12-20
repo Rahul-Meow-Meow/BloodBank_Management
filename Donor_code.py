@@ -128,6 +128,8 @@ def show_don_list():
     cur.execute(query)
     s = cur.fetchall()
     print("List of Donors:")
+    if len(s) == 0:
+        print("There are no donors.")
     for j in s:
         d = dict(
             zip(
