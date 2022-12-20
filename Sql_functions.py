@@ -1,7 +1,7 @@
 import mysql.connector
 
-con = mysql.connector.connect(host='localhost', user='root',
-                              passwd='root', autocommit=True)
+con = mysql.connector.connect(host='localhost', user='root', passwd='root',
+                              database = 'bloodbank_management',autocommit=True)
 cur = con.cursor()
 
 
