@@ -19,6 +19,8 @@ def show_rec_list(Id):
     query2 = 'select * from {}'.format('h_' + str(Id))
     cur.execute(query2)
     s = cur.fetchall()
+    if len(s) == 0:
+        print("There are no recipients.")
     for j in s:
         d = dict(zip([
             'Full Name',
@@ -32,5 +34,7 @@ def show_rec_list(Id):
             ], j))
         time.sleep(1)
         print (json.dumps(d, indent=4, default=str))
+
+
 
         
