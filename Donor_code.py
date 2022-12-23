@@ -26,7 +26,7 @@ def bloodbank_login():
     tries = 3
     while tries > 0:
         pwd = input("Enter password for login:")
-        if pwd == "Dharmodynamics":
+        if pwd == "peopleservice":
             time.sleep(1.25)
             print('''Successfully logged into the Bloodbank database!\n\n''')
             ch = ""
@@ -51,7 +51,7 @@ def bloodbank_login():
                     time.sleep(1)
                     break
             break
-        elif pwd != "Dharmodynamics":
+        elif pwd != "peopleservice":
             time.sleep(0.75)
             print("Incorrect password!! Try again.")
             tries -= 1
